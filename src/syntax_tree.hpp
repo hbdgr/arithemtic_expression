@@ -1,55 +1,10 @@
 #pragma once
-#include <iostream>
 
 #include <string>
 #include <memory>
-
-
-// deifine operators enum with thier priority
-enum class Operator : unsigned char {
-  division = 0x01,
-  multiplication = 0x02,
-  addition = 0x03,
-  subtraction = 0x04,
-  none = 0x05,
-};
-
-class ArithmeticOperator {
-public:
-  ArithmeticOperator() = delete;
-  ArithmeticOperator(char ch);
-  ArithmeticOperator(Operator op) : _op(op) {}
-
-  int execute(short x, short y) const;
-private:
-
-  Operator _op;
-};
-
-
-struct SimpleCustomVariant {
-  SimpleCustomVariant() :
-    is_empty(true),
-    hold_operator(false),
-    arithmetic_operator(Operator::none)
-      {};
-
-  SimpleCustomVariant(short ele) :
-    hold_operator(false),
-    arithmetic_operator(Operator::none),
-    element(ele)
-      {};
-
-  SimpleCustomVariant(ArithmeticOperator op) :
-    hold_operator(true),
-    arithmetic_operator(op)
-      {};
-
-  bool is_empty = false;
-  bool hold_operator = false;
-  ArithmeticOperator arithmetic_operator;
-  short element;
-};
+#include "arithmetic_operator.hpp"
+#include "simple_custom_variant.hpp"
+#include "utils.hpp"
 
 
 class SyntaxTree {
@@ -65,17 +20,14 @@ public:
     return _data;
   }
 
-  int evaluate() {
-    if (_data.hold_operator) {
-      return _data.arithmetic_operator
-        .execute(_left_child -> get_data().element, _right_child -> get_data().element);
-    } else if (_data.is_empty) {
-      throw std::runtime_error(std::string("[SyntaxTree] Can not evaluate empty tree"));
-    }
-    else {
-      return _data.element;
-    }
+  SyntaxTree* get_left_child() const {
+    return _left_child.get();
   }
+
+  SyntaxTree* get_right_child() const {
+    return _right_child.get();
+  }
+
 private:
   bool _is_empty = false;
   // std::variant from c++17 or at least from boost would be great here

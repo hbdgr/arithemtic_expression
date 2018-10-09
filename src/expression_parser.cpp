@@ -1,50 +1,54 @@
-#include <iostream>
-#include <stack>
 #include <algorithm>
 #include <stdexcept>
-
 #include "expression_parser.hpp"
 
 
 SyntaxTree ExpressionParser::generateTree(const std::string &expression) {
-  std::stack<short> elements_stack;
-
-  SyntaxTree local_tree = SyntaxTree();
-
   auto formatted_expression = remove_whitespaces(expression);
   if (formatted_expression.length() == 0) {
     throw std::invalid_argument(std::string("[ExpressionParser] Empty expression"));
   }
-  for (auto ch : remove_whitespaces(expression)) {
+  return consume_expression(std::move(formatted_expression));
+}
+
+SyntaxTree ExpressionParser::consume_expression(std::string &&formatted_expression) {
+  std::stack<short> elements_stack;
+  SyntaxTree local_tree = SyntaxTree();
+
+  for (auto ch : formatted_expression) {
     if (is_element(ch)) {
-      if (elements_stack.size() > 0) {
-        auto error_msg = std::string("[ExpressionParser] Bad numeric input: ") + std::to_string(elements_stack.top()) + ch;
-        throw std::invalid_argument(error_msg);
-      }
-      elements_stack.emplace(static_cast<short>(ch) - static_cast<short>('0')); // ASCII char to int
+      // throw if stack is not empty, it means that numeric value > 9 was found in expression
+      push_to_stack_if_empty(elements_stack, ch);
     } else if(is_operator(ch)) {
-      if (elements_stack.size() == 0) {
-        auto error_msg = std::string("[ExpressionParser] Duplicated operator or negative element are not allowed: ") + ch;
-        throw std::invalid_argument(error_msg);
-      }
       local_tree.add_operator(ch);
-      auto element = elements_stack.top();
-      elements_stack.pop();
-      local_tree.add_element(element);
+      // will throw error if stack is empty, it means that duplicated operator or negative element was found
+      insert_element_from_stack(elements_stack, local_tree);
     } else {
-      throw std::invalid_argument(std::string("[ExpressionParser] bad input: ") + ch);
+      throw std::invalid_argument(std::string("[ExpressionParser] Bad input char: ") + ch);
     }
   }
-  // add last element
-  if (elements_stack.size() > 0) {
-    auto element = elements_stack.top();
-    elements_stack.pop();
-    local_tree.add_element(element);
-  } else {
-    throw std::invalid_argument("[ExpressionParser] Operator at the end of expression");
-  }
+  // add last element - throw exception if operator at the end of expression was found.
+  insert_element_from_stack(elements_stack, local_tree);
 
   return local_tree;
+}
+
+void ExpressionParser::push_to_stack_if_empty(std::stack<short> &stack, char ch) {
+  if (stack.size() > 0) {
+    auto error_msg = std::string("[ExpressionParser] Bad numeric input: ") + std::to_string(stack.top()) + ch;
+    throw std::invalid_argument(error_msg);
+  }
+  stack.emplace(static_cast<short>(ch) - static_cast<short>('0')); // ASCII char to int
+}
+
+void ExpressionParser::insert_element_from_stack(std::stack<short> &stack, SyntaxTree &tree) {
+  if (stack.size() > 0) {
+    auto element = stack.top();
+    stack.pop();
+    tree.add_element(element);
+  } else {
+    throw std::invalid_argument("[ExpressionParser] Can not insert from empty stack");
+  }
 }
 
 std::string ExpressionParser::remove_whitespaces(const std::string &str) {

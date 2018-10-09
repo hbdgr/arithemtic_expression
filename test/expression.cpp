@@ -47,7 +47,7 @@ TEST_CASE("Parse_Correct_Expression") {
 		REQUIRE(execute_expression("6\n*\n5") == 30);
 	}
 
-	SECTION( "Basic expression whitespaces mixed") {
+	SECTION( "Basic expression with mixed whitespaces") {
 		REQUIRE(execute_expression("2\t  \n*\r\n0") == 0);
 	}
 }

@@ -1,42 +1,5 @@
-#include <iostream>
 #include <stdexcept>
 #include "syntax_tree.hpp"
-#include "utils.hpp"
-
-ArithmeticOperator::ArithmeticOperator(char ch) {
-  switch (ch) {
-    case '+':
-      _op = Operator::addition;
-      break;
-    case '-':
-      _op = Operator::subtraction;
-      break;
-    case '*':
-      _op = Operator::multiplication;
-      break;
-    case '/':
-      _op = Operator::division;
-      break;
-    default:
-      throw std::runtime_error(std::string("[ArithmeticOperator] Unknown operator: ") + ch);
-  }
-}
-
-int ArithmeticOperator::execute(short x, short y) const {
-  switch (_op) {
-    case Operator::addition:
-      return x + y;
-    case Operator::subtraction:
-      return x - y;
-    case Operator::multiplication:
-      return x * y;
-    case Operator::division:
-      return x / y;
-    case Operator::none:
-    default:
-      throw std::runtime_error(std::string("[ArithmeticOperator] Should not happen bad op:"));
-  }
-}
 
 
 void SyntaxTree::add_element(short num) {
