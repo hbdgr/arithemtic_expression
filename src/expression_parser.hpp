@@ -1,8 +1,16 @@
 #pragma once
 
-#include <string>
+#include "syntax_tree.hpp"
 
-class Syntax_Tree {
+
+class ExpressionParser {
 public:
-  std::string print_hello() const;
+  static SyntaxTree generateTree(const std::string &expression) {
+    SyntaxTree local_tree = SyntaxTree();
+    for (auto ch : expression) {
+        local_tree.add_element(static_cast<int>(ch) - static_cast<int>('0'));
+    }
+
+    return local_tree;
+  }
 };
