@@ -5,12 +5,11 @@
 
 class ExpressionParser {
 public:
-  static SyntaxTree generateTree(const std::string &expression) {
-    SyntaxTree local_tree = SyntaxTree();
-    for (auto ch : expression) {
-        local_tree.add_element(static_cast<int>(ch) - static_cast<int>('0'));
-    }
+  static SyntaxTree generateTree(const std::string &expression);
 
-    return local_tree;
-  }
+private:
+  // create copy of original string with removed whitespaces
+  static std::string remove_whitespaces(const std::string &str);
+  static bool is_element(char ch);
+  static bool is_operator(char ch);
 };
