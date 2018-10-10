@@ -4,5 +4,5 @@ file(GLOB test_sources "*.cpp")
 set(test_name "tests")
 add_executable(${test_name} ${test_sources})
 
-target_link_libraries(${test_name} Catch2::Catch2 my_lib)
+target_link_libraries(${test_name} Catch2::Catch2 expressions)
 add_test (NAME all_tests COMMAND ${test_name})
