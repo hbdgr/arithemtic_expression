@@ -1,4 +1,5 @@
 #include <stdexcept>
+#include <ostream>
 #include "arithmetic_operator.hpp"
 
 
@@ -23,6 +24,10 @@ ArithmeticOperator::ArithmeticOperator(char ch) {
   }
 }
 
+Operator ArithmeticOperator::get_operator() const {
+  return _op;
+}
+
 int ArithmeticOperator::execute(short x, short y) const {
   switch (_op) {
     case Operator::addition:
@@ -31,9 +36,30 @@ int ArithmeticOperator::execute(short x, short y) const {
       return x - y;
     case Operator::multiplication:
       return x * y;
-    case Operator::division:
+    case Operator::division: {
+      if (y == 0) {
+        throw std::overflow_error("Divide by zero!");
+      }
       return x / y;
     }
-  //  default:
-    //  throw std::runtime_error(std::string("[ArithmeticOperator] Should not happen bad op"));
+  }
+}
+
+std::ostream& operator<<(std::ostream &os, const ArithmeticOperator &rhs) {
+  switch (rhs.get_operator()) {
+    case Operator::addition:
+      os << "addition";
+      break;
+    case Operator::subtraction:
+      os << "subtraction";
+      break;
+    case Operator::multiplication:
+      os << "multiplication";
+      break;
+    case Operator::division:
+      os << "division";
+      break;
+    }
+
+    return os;
 }

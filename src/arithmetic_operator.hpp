@@ -15,7 +15,11 @@ public:
   ArithmeticOperator(char ch);
   ArithmeticOperator(Operator op);
 
+  Operator get_operator() const;
+
   int execute(short x, short y) const;
 private:
   Operator _op;
 };
+
+std::ostream& operator<<(std::ostream &os, const ArithmeticOperator &rhs);

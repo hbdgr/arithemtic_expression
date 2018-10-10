@@ -41,6 +41,15 @@ SimpleCustomVariant& SimpleCustomVariant::operator=(const SimpleCustomVariant &r
   return *this;
 }
 
+SimpleCustomVariant& SimpleCustomVariant::operator=(short rhs) {
+  _empty = false;
+  _hold_operator = false;
+  _arithmetic_operator = nullptr;
+  _element = rhs;
+
+  return *this;
+}
+
 bool SimpleCustomVariant::empty() const {
   return _empty;
 }

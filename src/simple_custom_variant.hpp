@@ -12,6 +12,7 @@ public:
   SimpleCustomVariant(const SimpleCustomVariant &rhs);
 
   SimpleCustomVariant& operator=(const SimpleCustomVariant &rhs);
+  SimpleCustomVariant& operator=(short rhs);
 
   bool empty() const;
   bool hold_operator() const;

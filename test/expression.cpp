@@ -2,7 +2,7 @@
 #include "shared.hpp"
 
 
-TEST_CASE("Parse_Correct_Expression") {
+TEST_CASE("Basic_Correct_Expressions") {
 	SECTION( "Simple one element" ) {
 		REQUIRE(execute_expression("0") == 0);
 	}
@@ -49,5 +49,11 @@ TEST_CASE("Parse_Correct_Expression") {
 
 	SECTION( "Basic expression with mixed whitespaces") {
 		REQUIRE(execute_expression("2\t  \n*\r\n0") == 0);
+	}
+}
+
+TEST_CASE("Invalid_Expressions") {
+	SECTION( "Division by zero") {
+		REQUIRE_THROWS_AS(execute_expression("2/0"), std::overflow_error);
 	}
 }
