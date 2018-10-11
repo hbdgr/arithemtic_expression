@@ -6,5 +6,5 @@
 
 auto execute_expression = [](const std::string &expression) {
 	auto tree = ExpressionParser::generateTree(expression);
-	return ExpressionEvaluator::fromTree(std::move(tree));
+	return ExpressionEvaluator::fromTree(&tree);
 };

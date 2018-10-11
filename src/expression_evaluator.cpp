@@ -1,46 +1,47 @@
 #include "expression_evaluator.hpp"
+#include <iostream>
 
 
-int ExpressionEvaluator::fromTree(SyntaxTree &&tree) {
-  auto tree_data = tree.get_data();
+int ExpressionEvaluator::fromTree(SyntaxTree *tree) {
+  update_tree(tree);
 
-  if (tree_data.empty()) {
+  // return calculated result
+  return get_tree_data(tree).get_element();
+}
+
+SimpleCustomVariant ExpressionEvaluator::get_tree_data(SyntaxTree *tree) {
+  // should not happen
+  if (tree == nullptr)
+    throw std::runtime_error(std::string("[ExpressionEvaluator] Tree is null.."));
+
+  auto tree_data = tree -> get_data();
+
+  if (tree_data.empty())
     throw std::runtime_error(std::string("[ExpressionEvaluator] Can not evaluate empty tree"));
-  } else if (tree_data.hold_operator()) {
-    auto left_child = tree.get_left_child();
-    auto right_child = tree.get_right_child();
 
-    // should not happen
-    if (left_child == nullptr)
-      throw std::runtime_error(std::string("[ExpressionEvaluator] Left child is null.."));
+    return tree_data;
+}
 
-    auto left_child_data = left_child -> get_data();
+void ExpressionEvaluator::update_tree(SyntaxTree *tree) {
+  auto tree_data = get_tree_data(tree);
+  if (tree_data.hold_operator()) {
+    auto left_child_data = get_tree_data(tree -> get_left_child());
+    if (left_child_data.hold_operator())
+      return update_tree(tree -> get_left_child());
 
-    if (left_child_data.hold_operator()) {
-      return fromTree(std::move(*tree.get_left_child()));
-    }
-
-    // should not happen
-    if (right_child == nullptr)
-      throw std::runtime_error(std::string("[ExpressionEvaluator] Right child is null.."));
-
-    auto right_child_data = right_child -> get_data();
-
-    if (right_child_data.hold_operator()) {
-      return fromTree(std::move(*tree.get_right_child()));
-    }
+    auto right_child_data = get_tree_data(tree -> get_right_child());
+    if (right_child_data.hold_operator())
+      return update_tree(tree -> get_right_child());
 
     auto result = tree_data.get_arithmetic_operator()
       .execute(left_child_data.get_element(), right_child_data.get_element());
 
-    if (tree.get_parent() == nullptr) {
-      return result;
-    }
+    // replace branch oprator node with actual children result
+    tree -> update_data(result);
 
-    tree.update_data(result);
-    return fromTree(std::move(*tree.get_parent()));
-  } else {
-    // one element expression
-    return tree_data.get_element();
+    // end if root node of tree
+    if (tree -> get_parent() != nullptr) {
+      return update_tree(tree -> get_parent());
+    }
   }
 }
