@@ -39,6 +39,9 @@ void SyntaxTree::add_element(short num) {
   } else if (_right_child == nullptr) {
     // Adding element to right child
     _right_child = std::make_unique<SyntaxTree>(num);
+  } else if (_right_child -> get_data().hold_operator() && _right_child -> have_space_for_child()) {
+    // Move add_element decision to left child
+    _right_child -> add_element(num);
   } else if (_parent != nullptr) {
     // Move add_elemnet back to parent"
     _parent -> add_element(num);
@@ -52,8 +55,19 @@ void SyntaxTree::add_operator(char ch) {
     _is_empty = false;
     _data = ArithmeticOperator(ch);
   } else if (_data.hold_operator()) {
-    _left_child = std::make_unique<SyntaxTree>(SyntaxTree(this, _data));
-    _data = ArithmeticOperator(ch);
+    auto actual_operator = _data.get_arithmetic_operator();
+    auto new_operator = ArithmeticOperator(ch);
+
+    if (new_operator.get_priority() > actual_operator.get_priority()) {
+      if (_right_child == nullptr) {
+        _right_child = std::make_unique<SyntaxTree>(ch);
+      } else {
+        throw std::runtime_error(std::string("[SyntaxTree] add_operator right child occupied!"));
+      }
+    } else {
+      _left_child = std::make_unique<SyntaxTree>(SyntaxTree(this, _data));
+      _data = ArithmeticOperator(ch);
+    }
   } else if (_left_child == nullptr) {
     _left_child = std::make_unique<SyntaxTree>(ch);
   } else if (_right_child == nullptr) {

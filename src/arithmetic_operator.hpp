@@ -1,12 +1,12 @@
 #pragma once
 
 
-// deifine operators enum with thier priority
+// deifine operators
 enum class Operator : unsigned char {
-  division = 0x01,
-  multiplication = 0x02,
-  addition = 0x03,
-  subtraction = 0x04,
+  division,
+  multiplication,
+  addition,
+  subtraction,
 };
 
 class ArithmeticOperator {
@@ -16,10 +16,12 @@ public:
   ArithmeticOperator(Operator op);
 
   Operator get_operator() const;
+  int get_priority() const;
 
   int execute(short x, short y) const;
 private:
   Operator _op;
+  int _priority;
 };
 
 std::ostream& operator<<(std::ostream &os, const ArithmeticOperator &rhs);
