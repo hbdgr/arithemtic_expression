@@ -22,14 +22,17 @@ SyntaxTree ExpressionParser::consume_expression(std::string &&formatted_expressi
     if (is_element(ch)) {
       // throw if stack is not empty, it means that numeric value > 9 was found in expression
       push_to_stack_if_empty(elements_stack, ch);
-    } else if(is_operator(ch)) {
-      local_tree.add_operator(ArithmeticOperator(ch, increased_priority));
-      // will throw error if stack is empty, it means that duplicated operator or negative element was found
-      insert_element_from_stack(elements_stack, local_tree);
-    } else if (is_lparanthes(ch)){
-      increased_priority += 3;
-    } else if (is_rparanthes(ch)){
-      increased_priority -= 3;
+    }
+    else if(Operators.count(ch)) {
+        local_tree.add_operator(ArithmeticOperator(ch, increased_priority));
+        // will throw error if stack is empty, it means that duplicated operator or negative element was found
+        insert_element_from_stack(elements_stack, local_tree);
+    } else if (SpecialOperators.count(ch)) {
+      increased_priority += SpecialOperators.at(ch); // '(' or ')'
+      if (increased_priority < 0) {
+        // right parenthesis without its left pair
+        throw std::invalid_argument(std::string("[ExpressionParser] Negative increased priority not allowed: ") + ch);
+      }
     } else {
       throw std::invalid_argument(std::string("[ExpressionParser] Bad input char: ") + ch);
     }
@@ -77,22 +80,4 @@ bool ExpressionParser::is_element(char ch) {
     return false;
 
   return true;
-}
-
-bool ExpressionParser::is_operator(char ch) {
-  if (ch == '+' || ch == '-' || ch == '*' || ch == '/')
-    return true;
-  return false;
-}
-
-bool ExpressionParser::is_lparanthes(char ch) {
-  if (ch == '(' )
-    return true;
-  return false;
-}
-
-bool ExpressionParser::is_rparanthes(char ch) {
-  if (ch == ')' )
-    return true;
-  return false;
 }

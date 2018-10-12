@@ -1,37 +1,35 @@
 #pragma once
 
 #include <map>
+#include <utility>
 
+using arithmetic_func = int (*)(short, short);
 
-// define operators
-enum class Operator : char {
-  division = '/',
-  multiplication = '*',
-  addition = '+',
-  subtraction = '-',
+// define arithmetic operators with its priorities and functions
+const std::map<char, std::pair<int, arithmetic_func>> Operators {
+  { '/', { 2, [](short x, short y){ return x / y; }}},  // division
+  { '*', { 2, [](short x, short y){ return x * y; }}},  // multiplication
+  { '+', { 1, [](short x, short y){ return x + y; }}},  // addition
+  { '-', { 1, [](short x, short y){ return x - y; }}}   // subtraction
 };
 
-// define Operators priority
-const std::map<Operator, int> Op_priorities {
-  { Operator::division, 2 },
-  { Operator::multiplication, 2 },
-  { Operator::addition, 1 },
-  { Operator::subtraction, 1 }
+// define special operators with its priorities
+const std::map<char, int> SpecialOperators {
+  { '(', 3 },  // left_parenthesis
+  { ')', -3 }, // right_parenthesis
 };
-
 
 class ArithmeticOperator {
 public:
   ArithmeticOperator() = delete;
   ArithmeticOperator(char ch, int increased_priority = 0);
-  ArithmeticOperator(Operator op, int increased_priority = 0);
 
-  Operator get_operator() const;
+  char get_operator() const;
   int get_priority() const;
 
   int execute(short x, short y) const;
 private:
-  Operator _op;
+  char _op;
   int _priority;
 };
 

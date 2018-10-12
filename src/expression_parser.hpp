@@ -20,8 +20,4 @@ private:
   // create copy of original string with removed whitespaces
   static std::string remove_whitespaces(const std::string &str);
   static bool is_element(char ch);
-  static bool is_operator(char ch);
-
-  static bool is_lparanthes(char ch);
-  static bool is_rparanthes(char ch);
 };
