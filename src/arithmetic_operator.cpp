@@ -3,9 +3,12 @@
 #include "arithmetic_operator.hpp"
 
 
-ArithmeticOperator::ArithmeticOperator(Operator op) : _op(op) {}
+ArithmeticOperator::ArithmeticOperator(Operator op, int increased_priority) :
+  _op(op),
+  _priority(Op_priorities.at(op) + increased_priority)
+  {}
 
-ArithmeticOperator::ArithmeticOperator(char ch) {
+ArithmeticOperator::ArithmeticOperator(char ch, int increased_priority) {
   switch (ch) {
     case '+':
       _op = Operator::addition;
@@ -22,8 +25,8 @@ ArithmeticOperator::ArithmeticOperator(char ch) {
     default:
       throw std::runtime_error(std::string("[ArithmeticOperator] Unknown operator: ") + ch);
   }
-  // add _priority from operator priorities map
-  _priority = Op_priorities.at(_op);
+  // add _priority from operator priorities map, optional increased_priority
+  _priority = Op_priorities.at(_op) + increased_priority;
 }
 
 Operator ArithmeticOperator::get_operator() const {

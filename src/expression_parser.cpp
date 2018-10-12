@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include "expression_parser.hpp"
+#include "arithmetic_operator.hpp"
 
 
 SyntaxTree ExpressionParser::generateTree(const std::string &expression) {
@@ -15,20 +16,30 @@ SyntaxTree ExpressionParser::consume_expression(std::string &&formatted_expressi
   std::stack<short> elements_stack;
   SyntaxTree local_tree = SyntaxTree();
 
+  int increased_priority= 0;
+
   for (auto ch : formatted_expression) {
     if (is_element(ch)) {
       // throw if stack is not empty, it means that numeric value > 9 was found in expression
       push_to_stack_if_empty(elements_stack, ch);
     } else if(is_operator(ch)) {
-      local_tree.add_operator(ch);
+      local_tree.add_operator(ArithmeticOperator(ch, increased_priority));
       // will throw error if stack is empty, it means that duplicated operator or negative element was found
       insert_element_from_stack(elements_stack, local_tree);
+    } else if (is_lparanthes(ch)){
+      increased_priority += 3;
+    } else if (is_rparanthes(ch)){
+      increased_priority -= 3;
     } else {
       throw std::invalid_argument(std::string("[ExpressionParser] Bad input char: ") + ch);
     }
   }
   // add last element - throw exception if operator at the end of expression was found.
   insert_element_from_stack(elements_stack, local_tree);
+
+  if (increased_priority != 0) {
+    throw std::invalid_argument(std::string("[ExpressionParser] Missing parentheses!"));
+  }
 
   return local_tree;
 }
@@ -70,6 +81,18 @@ bool ExpressionParser::is_element(char ch) {
 
 bool ExpressionParser::is_operator(char ch) {
   if (ch == '+' || ch == '-' || ch == '*' || ch == '/')
+    return true;
+  return false;
+}
+
+bool ExpressionParser::is_lparanthes(char ch) {
+  if (ch == '(' )
+    return true;
+  return false;
+}
+
+bool ExpressionParser::is_rparanthes(char ch) {
+  if (ch == ')' )
     return true;
   return false;
 }

@@ -34,6 +34,10 @@ TEST_CASE("Invalid_Expression") {
 		REQUIRE_THROWS_AS(execute_expression("-5"), std::invalid_argument);
 	}
 
+	SECTION( "Description example 3" ) {
+		REQUIRE_THROWS_AS(execute_expression("10 + 1"), std::invalid_argument);
+	}
+
 	SECTION( "Description example 4" ) {
 		REQUIRE_THROWS_AS(execute_expression("-10"), std::invalid_argument);
 	}

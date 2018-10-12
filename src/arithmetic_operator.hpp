@@ -4,11 +4,11 @@
 
 
 // define operators
-enum class Operator : unsigned char {
-  division,
-  multiplication,
-  addition,
-  subtraction,
+enum class Operator : char {
+  division = '/',
+  multiplication = '*',
+  addition = '+',
+  subtraction = '-',
 };
 
 // define Operators priority
@@ -23,8 +23,8 @@ const std::map<Operator, int> Op_priorities {
 class ArithmeticOperator {
 public:
   ArithmeticOperator() = delete;
-  ArithmeticOperator(char ch);
-  ArithmeticOperator(Operator op);
+  ArithmeticOperator(char ch, int increased_priority = 0);
+  ArithmeticOperator(Operator op, int increased_priority = 0);
 
   Operator get_operator() const;
   int get_priority() const;
