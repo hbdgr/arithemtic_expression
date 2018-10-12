@@ -1,13 +1,24 @@
 #pragma once
 
+#include <map>
 
-// deifine operators
+
+// define operators
 enum class Operator : unsigned char {
   division,
   multiplication,
   addition,
   subtraction,
 };
+
+// define Operators priority
+const std::map<Operator, int> Op_priorities {
+  { Operator::division, 2 },
+  { Operator::multiplication, 2 },
+  { Operator::addition, 1 },
+  { Operator::subtraction, 1 }
+};
+
 
 class ArithmeticOperator {
 public:

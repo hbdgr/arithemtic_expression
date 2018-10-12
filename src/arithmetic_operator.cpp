@@ -9,23 +9,21 @@ ArithmeticOperator::ArithmeticOperator(char ch) {
   switch (ch) {
     case '+':
       _op = Operator::addition;
-      _priority = 1;
       break;
     case '-':
       _op = Operator::subtraction;
-      _priority = 1;
       break;
     case '*':
       _op = Operator::multiplication;
-      _priority = 2;
       break;
     case '/':
       _op = Operator::division;
-      _priority = 2;
       break;
     default:
       throw std::runtime_error(std::string("[ArithmeticOperator] Unknown operator: ") + ch);
   }
+  // add _priority from operator priorities map
+  _priority = Op_priorities.at(_op);
 }
 
 Operator ArithmeticOperator::get_operator() const {
