@@ -8,16 +8,19 @@ SyntaxTree::SyntaxTree() :
 SyntaxTree::SyntaxTree(short element) :
   _data(element) {}
 
-SyntaxTree::SyntaxTree(char ch) :
-  _data(ArithmeticOperator(ch)) {}
+SyntaxTree::SyntaxTree(const ArithmeticOperator &op, SyntaxTree *parent) :
+  _parent(parent),
+  _data(op)
+  {}
 
-SyntaxTree::SyntaxTree(SyntaxTree *parent, SimpleCustomVariant data) :
+SyntaxTree::SyntaxTree(SyntaxTree *parent, const SimpleCustomVariant &data) :
   _data(data),
   _parent(parent),
   _left_child(std::move(parent -> _left_child)),
   _right_child(std::move(parent -> _right_child))
   {}
 
+// move whole tree
 SyntaxTree::SyntaxTree(SyntaxTree &&rhs) :
   _is_empty(rhs._is_empty),
   _data(std::move(rhs._data)),
@@ -28,6 +31,7 @@ SyntaxTree::SyntaxTree(SyntaxTree &&rhs) :
 
 void SyntaxTree::add_element(short num) {
   if (_is_empty) {
+    // Adding element to myself
     _is_empty = false;
     _data = num;
   } else if (_left_child == nullptr) {
@@ -40,18 +44,19 @@ void SyntaxTree::add_element(short num) {
     // Adding element to right child
     _right_child = std::make_unique<SyntaxTree>(num);
   } else if (_right_child -> get_data().hold_operator() && _right_child -> have_space_for_child()) {
-    // Move add_element decision to left child
+    // Move add_element decision to right child"
     _right_child -> add_element(num);
   } else if (_parent != nullptr) {
-    // Move add_elemnet back to parent"
+    // Move add_elemnet decision back to parent
     _parent -> add_element(num);
   } else {
-    throw std::runtime_error(std::string("[SyntaxTree] add_element not fully implemented!"));
+    throw std::runtime_error(std::string("[SyntaxTree] Unexpected add_element, bad tree format!"));
   }
 }
 
 void SyntaxTree::add_operator(char ch) {
   if (_is_empty) {
+    // Adding operator to myself
     _is_empty = false;
     _data = ArithmeticOperator(ch);
   } else if (_data.hold_operator()) {
@@ -59,21 +64,29 @@ void SyntaxTree::add_operator(char ch) {
     auto new_operator = ArithmeticOperator(ch);
 
     if (new_operator.get_priority() > actual_operator.get_priority()) {
+      // Bigger priority add_operator
       if (_right_child == nullptr) {
-        _right_child = std::make_unique<SyntaxTree>(ch);
+        // Add operator to right_child
+        _right_child = std::make_unique<SyntaxTree>(new_operator, this);
+      } else if (_right_child -> get_data().hold_operator()) {
+        // Move add_operator decision to right child
+        _right_child -> add_operator(ch);
       } else {
-        throw std::runtime_error(std::string("[SyntaxTree] add_operator right child occupied!"));
+        throw std::runtime_error(std::string("[SyntaxTree] add_operator right child occupied with element!"));
       }
     } else {
+      // Normal priority add operator as parent, this to left child
       _left_child = std::make_unique<SyntaxTree>(SyntaxTree(this, _data));
-      _data = ArithmeticOperator(ch);
+      _data = new_operator;
     }
   } else if (_left_child == nullptr) {
+    // Add operator to left_child
     _left_child = std::make_unique<SyntaxTree>(ch);
   } else if (_right_child == nullptr) {
+    // Add operator to right_child
     _right_child = std::make_unique<SyntaxTree>(ch);
   } else {
-    throw std::runtime_error(std::string("[SyntaxTree] add_operator not fully implemented!"));
+    throw std::runtime_error(std::string("[SyntaxTree] Unexpected add_operator, bed tree format!"));
   }
 }
 

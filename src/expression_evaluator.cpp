@@ -1,5 +1,4 @@
 #include "expression_evaluator.hpp"
-#include <iostream>
 
 
 int ExpressionEvaluator::fromTree(SyntaxTree *tree) {

@@ -9,10 +9,15 @@
 
 class SyntaxTree {
 public:
+  // new empty tree
   SyntaxTree();
+  // new tree with element
   SyntaxTree(short element);
-  SyntaxTree(char ch);
-  SyntaxTree(SyntaxTree *child, SimpleCustomVariant data);
+  // new tree with operator and optional parent
+  SyntaxTree(const ArithmeticOperator &op, SyntaxTree *parent = nullptr);
+  // copy whole tree
+  SyntaxTree(SyntaxTree *child, const SimpleCustomVariant &data);
+  // move whole tree
   SyntaxTree(SyntaxTree &&rhs);
 
   void add_element(short element);
