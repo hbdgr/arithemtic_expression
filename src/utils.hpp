@@ -1,5 +1,6 @@
 #pragma once
 
+int execute_expression(const std::string &expression);
 
 namespace std {
   // basic version of std::make_unique

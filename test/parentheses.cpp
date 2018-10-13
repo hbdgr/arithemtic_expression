@@ -1,6 +1,6 @@
 #include <catch2/catch.hpp>
 #include <stdexcept>
-#include "shared.hpp"
+#include <utils.hpp>
 
 
 TEST_CASE("Parentheses") {

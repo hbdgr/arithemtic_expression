@@ -11,12 +11,12 @@ int ExpressionEvaluator::fromTree(SyntaxTree *tree) {
 SimpleCustomVariant ExpressionEvaluator::get_tree_data(SyntaxTree *tree) {
   // should not happen
   if (tree == nullptr)
-    throw std::runtime_error(std::string("[ExpressionEvaluator] Tree is null.."));
+    throw std::runtime_error("[ExpressionEvaluator] Tree is null..");
 
   auto tree_data = tree -> get_data();
 
   if (tree_data.empty())
-    throw std::runtime_error(std::string("[ExpressionEvaluator] Can not evaluate empty tree"));
+    throw std::runtime_error("[ExpressionEvaluator] Can not evaluate empty tree");
 
     return tree_data;
 }

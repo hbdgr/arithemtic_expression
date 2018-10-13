@@ -6,28 +6,28 @@
 ArithmeticOperator::ArithmeticOperator(char ch, int increased_priority) {
   if (Operators.count(ch)) {
     // save operator
-    _op = ch;
+    m_op = ch;
   } else {
     throw std::runtime_error(std::string("[ArithmeticOperator] Unsupported operator for arithmetic operations: ") + ch);
   }
 
-  // add _priority from operator priorities map, optional increased_priority
-  _priority = Operators.at(ch).first + increased_priority;
+  // add m_priority from operator priorities map, optional increased_priority
+  m_priority = Operators.at(ch).first + increased_priority;
 }
 
 char ArithmeticOperator::get_operator() const {
-  return _op;
+  return m_op;
 }
 
 int ArithmeticOperator::get_priority() const {
-  return _priority;
+  return m_priority;
 }
 
-int ArithmeticOperator::execute(short x, short y) const {
-  if (_op == '/' && y == 0) {
+int ArithmeticOperator::execute(int x, int y) const {
+  if (m_op == '/' && y == 0) {
     throw std::overflow_error("Divide by zero!");
   }
-  return Operators.at(_op).second(x, y);
+  return Operators.at(m_op).second(x, y);
 }
 
 std::ostream& operator<<(std::ostream &os, const ArithmeticOperator &rhs) {

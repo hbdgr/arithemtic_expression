@@ -3,14 +3,14 @@
 #include <map>
 #include <utility>
 
-using arithmetic_func = int (*)(short, short);
+using arithmetic_func = int (*)(int, int);
 
 // define arithmetic operators with its priorities and functions
 const std::map<char, std::pair<int, arithmetic_func>> Operators {
-  { '/', { 2, [](short x, short y){ return x / y; }}},  // division
-  { '*', { 2, [](short x, short y){ return x * y; }}},  // multiplication
-  { '+', { 1, [](short x, short y){ return x + y; }}},  // addition
-  { '-', { 1, [](short x, short y){ return x - y; }}}   // subtraction
+  { '/', { 2, [](int x, int y){ return x / y; }}},  // division
+  { '*', { 2, [](int x, int y){ return x * y; }}},  // multiplication
+  { '+', { 1, [](int x, int y){ return x + y; }}},  // addition
+  { '-', { 1, [](int x, int y){ return x - y; }}}   // subtraction
 };
 
 // define special operators with its priorities
@@ -27,10 +27,10 @@ public:
   char get_operator() const;
   int get_priority() const;
 
-  int execute(short x, short y) const;
+  int execute(int x, int y) const;
 private:
-  char _op;
-  int _priority;
+  char m_op;
+  int m_priority;
 };
 
 std::ostream& operator<<(std::ostream &os, const ArithmeticOperator &rhs);
