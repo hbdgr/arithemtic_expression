@@ -9,15 +9,21 @@ Start with update submodules (Catch2):
 $ git submodule update --init
 ```
 
-Create new dir for build and use cmake
+Create new directory for build and use cmake
 ```
 $ mkdir build && cd build
 $ cmake .. && make
 ```
 
 # Test
+Tests are located in `test` directory and includes:
+- expressions
+- complex expressions
+- invalid inputs
+- operators priority
+- and parentheses
 
-Run tests with:
+## Run tests with:
 ```
-./test/tests
+./build_dir/test/tests
 ```
